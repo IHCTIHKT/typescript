@@ -1,35 +1,12 @@
-type A = {
-    nick: string;
-    info: object;
-    age?: number | string;
-    photo?: string | null;
-};
+type numberArr = Record<string, number>;
 
-const a1: A = {
-    age: 10,
-    nick: 'mynick',
-    info: [1, 100],
-    photo: 'string',
-};
-
-const a2: A = {
-    age: '10 years',
-    nick: '',
-    info: { id: 100 },
-    photo: null,
-};
-
-const a3: A = {
-    nick: '       ',
-    info: ['secret', 'key'],
-};
-
-const a4: A = {
-    nick: '',
-    info: {},
-};
-
-console.log(a1);
-console.log(a2);
-console.log(a3);
-console.log(a4);
+function sumNumber(objects: numberArr[]): number {
+    let total = 0;
+    for (const obj of objects) {
+        for (const value of Object.values(obj)) {
+            total = total + value;
+        }
+    }
+    return total;
+}
+console.log(sumNumber([{ a: 20, b: 30}, {}, { a: 3 }, { x: 5 }])); // 58
