@@ -17,4 +17,4 @@ function generatePassword(options: Options) {
     }
     return password;
 }
-console.log(generatePassword({ length: 10 }));1
+console.log(generatePassword({ length: 10 }));
