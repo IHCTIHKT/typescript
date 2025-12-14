@@ -1,38 +1,48 @@
-type Options = {
-    length: number,
-    lowercase: boolean,
-    uppercase: boolean,
-    numbers: boolean,
-    symbols: boolean,
+type Payment = {
+    id: number;
+    month: string;
+    amount: number;
+};
+type TaxInfo = {
+    income: number;
+    tax13: number;
+    tax15: number;
+    total: number;
+};
+function theTaxService(payments: Payment[]): TaxInfo {
+    let income = 0;
+    for (const payment of payments) {
+        income += payment.amount;
+    }
+
+    const limit = 2_400_000;
+    const tax13limit = 0.13;
+    const tax15limit = 0.15;
+
+    let tax13 = 0;
+    let tax15 = 0;
+
+    if (income <= limit) {
+        tax13 = income * tax13limit;
+    } else {
+        tax13 = limit * tax13limit;
+
+        const theRemainderOfTheLimit = income - limit;
+        tax15 = theRemainderOfTheLimit * tax15limit;
+    }
+
+    const totalTax = tax13 + tax15
+    return {
+        income,
+        tax13,
+        tax15,
+        total: totalTax
+    };
 }
-function generatePassword2(options: Options) {
-    const { length, lowercase, uppercase, numbers, symbols } = options;
-    if (length <= 0) {
-        return null;
-    }
-    let chars = '';
-    const alphabet = 'abcdefghijklmnopqrstuvwxyz';
-    const uppercase1 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    const number = '0123456789';
-    const symbol = '!@#$%^&*()_+{}|[];:,.<>?';
-    if (lowercase) chars += alphabet;
-    if (uppercase) chars += uppercase1;
-    if (numbers) chars += number;
-    if (symbols) chars += symbol;
-    if (chars.length === 0) {
-        return '';
-    }
-    let password = '';
-    for (let i = 0; i < length; i++) {
-        const random = Math.floor(Math.random() * chars.length);
-        password += chars[random];
-    }
-    return password;
-}
-console.log(generatePassword2({
-    length: 10,
-    lowercase: false,
-    uppercase: true,
-    numbers: false,
-    symbols: true
-}));
+
+const payments: Payment[] = [
+    { id: 1, month: 'Январь', amount: 265_000 },
+    { id: 2, month: 'Февраль', amount: 320_000 },
+    { id: 3, month: 'Февраль', amount: 3_500_000 },
+];
+    console.log(theTaxService(payments));
