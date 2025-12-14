@@ -1,36 +1,9 @@
-import { faker } from '@faker-js/faker';
-type UserRole = 'admin' | 'guest' | 'manager';
-
-type User = {
-    id: string;
-    email: string;
-    password: string;
-    role: UserRole;
-}
-function generateRandomUser(n: number): User[] {
-    const users = [];
-    const roles = ['admin', 'guest', 'manager'];
-    for(let i = 0; i < n; i++) {
-        const random = Math.floor(Math.random() * roles.length);
-        const randomRole = roles[random];
-        const user: User = {
-            id: faker.string.uuid(),
-            email: faker.internet.email(),
-            password: faker.internet.password(),
-            role: randomRole
-        }
-        users.push(user);
+function theLargestDivisor(num: number): number {
+    for (let i = Math.floor(num / 2); i > 0; i--) {
+        if (num % i === 0) return i;
     }
-    return users;
+    return 1;
 }
-function filterByRole(users: User[], role: UserRole[]): User[] {
-    const user = [];
-    for (let i = 0; i < user.length; i++) {
-        const user = user[i];
-        if (user.role === role) {
-        }
-        user.push(user[i]);
-    }
-    return user;
-}
-console.log(generateRandomUser(5));
+console.log(theLargestDivisor(1488))
+console.log(theLargestDivisor(67))
+console.log(theLargestDivisor(52))
