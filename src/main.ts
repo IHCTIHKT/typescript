@@ -1,1 +1,8 @@
-type Mix = {id: number; text?: string | null}; const objects: Mix[] = [{id:1}, {id:2, text: null}, {id:3, text: ''}, {id:4, text: 'LitEnergy'}]; objects.forEach(obj => console.log((obj.text ?? 'не обнаружено') || 'пусто'));
+const a = ('' || null || 0 || -0 || undefined) ?? ((null || 0) ?? '' ?? null);
+
+console.log(a);
+//Выводиться 0, так как
+// 1) Оператор || возвращает первое истинное значение, а если истинных значений нет возвращает последнее значение - undefined.
+// 2) Остановились на undefined ?? null. Оператор ?? возвращает правую часть, если левая = null или undefined.
+// 3) null || 0 выдаст 0.
+// 4) 0 ?? '' ?? null), выдаст 0 так как это первое истинное значение.
