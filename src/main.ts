@@ -1,42 +1,73 @@
-import { fakerRU } from '@faker-js/faker'
-
-const possibleTasks = ['Купить кота', 'Продать кота', 'Помыть кота', 'Купить арбуз'];
-
 type User = {
-    id: string;
-    name: string;
+    id: number;
+    name?: string;
     email: string;
-    company: string;
-    tasks: string[];  // Исправлено: массив строк вместо строки
 };
 
-function generateUsers(min: number = 3, max: number = 6): User[] {  // Исправлено: возвращает массив
-    const count: number = fakerRU.number.int({ min, max });
-    const users: User[] = [];  // Исправлено: инициализация как пустой массив
+type Item = {
+    id: number;
+    name: string;
+    price: number;
+    count?: number;
+};
 
-    for (let i = 0; i < count; i++) {
-        users.push({
-            id: fakerRU.string.nanoid(6),
-            name: fakerRU.person.fullName(),
-            email: fakerRU.internet.email(),
-            company: fakerRU.company.name(),
-            tasks: fakerRU.helpers.arrayElements(possibleTasks, { min: 0, max: 2 })
-        });
-    }
-    return users;
-}
+type DiscountCard = {
+    id: number;
+    series: number;
+};
 
-function userTask(user: User, index: number): string {
-    const count: number = user.tasks.length;
+type Order = {
+    id: number;
+    user: User | null;
+    card: DiscountCard | null;
+    items: Item[];
+};
 
-    if (count === 0) {
-        return `${index + 1} Пользователь "${user.name}" (id="${user.id}"); Нет дел на сегодня`;
+function receipt(order: Order): string {
+    let cheque = '';
+    cheque += `Заказ #${order.id}\n`;
+
+    if (order.user) {
+        cheque += 'Клиент:\n';
+        cheque += `id: ${order.user.id}\n`;
+        cheque += `имя: ${order.user.name ?? 'не указано'}\n`;
+        cheque += `email: ${order.user.email}\n`;
     } else {
-        return `${index + 1} Пользователь "${user.name}" (id="${user.id}"); ${count} дел на сегодня`;
+        cheque += 'Клиент: Не указан\n';
     }
-}
 
-const users = generateUsers();  // Исправлено: вызываем правильное имя функции
-users.forEach((user, index) => {
-    console.log(userTask(user, index));
-});
+    if (order.card) {
+        cheque += `Скидочная карта: серия ${order.card.series}\n`;
+    } else {
+        cheque += 'Скидочная карта: Не применена\n';
+    }
+
+    cheque += 'Список покупок:\n';
+    let totalCount = 0;
+    let totalSum = 0;
+
+    for (const item of order.items) {
+        const count = item.count ?? 1;
+        const sum = item.price * count;
+        cheque += `${item.name} ${item.price} ${count}\n`;
+        totalCount += count;
+        totalSum += sum;
+    }
+
+    cheque += `Итого ${totalCount} позиций на ${totalSum}`;
+    return cheque;
+}
+const order: Order = {
+    id: 3,
+    user: {
+        id: 5,
+        email: 'example@domain.com',
+    },
+    card: null,
+    items: [
+        { id: 6, name: 'Хлеб', price: 75, count: 3 },
+        { id: 9, name: 'Вафли', price: 95.9, count: 1 },
+        { id: 12, name: 'Набор конфет', price: 350 },
+    ],
+};
+console.log(receipt(order));
