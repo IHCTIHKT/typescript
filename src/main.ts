@@ -1,8 +1,13 @@
-import { readFileSync } from 'fs';
-const users = [];
-const line = readFileSync('./users.csv', 'utf8').split('\n');
-for (let i = 1; i < line.length - 1; i++) {
-    const [id, name, email, age] = line[i].split(',');
-    users.push({ id: Number(id), name, email, age: Number(age) });
+import { readFileSync, writeFileSync } from 'fs';
+
+const poem = readFileSync('./text.txt', 'utf8');
+let newPoem = '';
+for (let letter of poem) {
+    if (letter === 'а') newPoem += 'о';
+    else if (letter === 'А') newPoem += 'О';
+    else if (letter === 'о') newPoem += 'а';
+    else if (letter === 'О') newPoem += 'А';
+    else newPoem += letter;
 }
-console.log(users);
+writeFileSync('./text2.txt', newPoem);
+console.log(newPoem);
