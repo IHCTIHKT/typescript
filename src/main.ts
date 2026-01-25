@@ -1,20 +1,41 @@
-/*
+import { faker } from '@faker-js/faker'
+import { writeFileSync } from 'fs';
 
-Напишите функцию intersection, которая получает на вход 2 массива чисел.
-А возвращает те элементы, которые есть в обоих массивах (то есть общие элементы).
+type User = {
+    id: number;
 
- */
-function intersection(arr1: number[], arr2: number[]) {
-    const result: number[] = [];
-    for (let i = 0; i < arr1.length; i++) {
-        let number = arr1[i];
+    name: string;
+    age: number;
 
-        for(let j = 0; j < arr2.length; j++) {
-            if (number === arr2[j]) {
-                result.push(number);
-            }
-        }
-    }
-    return result;
+    country: string;
+    city: string;
+
+    email: string;
+    phone: string;
+
+    work: string;
+    post: string;
+
 }
-console.log(intersection([1, 2, 3], [2, 3, 4, 5]));
+
+function generateUsers(count: number): User[] {
+    const users: User[] = [];
+    for (let i = 1; i <= count; i++) {
+        users.push({
+            id: i,
+            name: faker.person.fullName(),
+            age: faker.number.int({ min: 18, max: 100 }),
+            country: faker.location.country(),
+            city: faker.location.city(),
+            email: faker.internet.email(),
+            phone: faker.phone.number(),
+            work: faker.company.name(),
+            post: faker.person.jobTitle()
+        });
+    }
+    return users;
+}
+const usersList = generateUsers(2000);
+console.log(usersList);
+
+writeFileSync('report.txt', ['id,name,age,country,city,email,phone,work,post'], usersList, 'utf-8');
