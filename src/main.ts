@@ -1,25 +1,76 @@
-import { writeFileSync, readFileSync} from 'fs';
+/*
+Вам дан список сотрудников компании.
+У каждого сотрудника, кроме генерального директора, есть начальник.
 
-const fileName = readFileSync('order.csv', 'utf8');
-const line = fileName.split('\n');
-const days = ['Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота', 'Воскресенье'];
+Описание полей:
+id - id самого сотрудника
+name - имя самого сотрудника
+title - должность текущего сотрудника
+chiefId - id сотрудника, который является начальником текущего сотрудника
 
-let maxOrder = 0;
-let maxDay = '';
-let position = 0;
 
-for (let i = 0; i < line.length; i++) {
-    const number = line[i].split(',').map(Number);
-    const day = days[i % 7];
+Ваша задача - вывести цепочку сотрудников согласно их подчинению.
+Например, Алексей Иванов является генеральным директором, потому что у него нет начальник (chiefId=null),
+далее ищем его подчиненного, то есть такого сотрудника, у которого в chiefId указан гендир (chiefId=42).
+И так далее, пока не выведем всех сотрудников компании.
 
-    for (let k = 0; k < number.length; k++) {
-        const thisNumber = number[k];
-        if (thisNumber > maxOrder) {
-            maxOrder = thisNumber;
-            maxDay = day;
-            position = k + 1;
-        }
+Гарантируется, что цепочка подчинения линейная, то есть у каждого человека может быть
+только один другой сотрудник в подчинении, и у каждого сотрудника может быть только один начальник.
+
+Вывод должен быть таким:
+
+Алексей Иванов (Chief Executive Officer)
+Ирина Петрова (co-Chief Executive Officer)
+Дмитрий Соколов (Chief Operating Officer)
+Екатерина Смирнова (Chief Product and Technology Officer)
+Сергей Кузнецов (Chief Technical Officer)
+Ольга Васильева (Tech Lead)
+Николай Михайлов (Team Lead)
+Марина Федорова (Backend Developer)
+ */
+
+type User = {
+    id: number;
+    name: string;
+    chiefId: number | null;
+    title: string;
+};
+
+const employees: User[] = [
+    { id: 59, name: 'Екатерина Смирнова', chiefId: 12, title: 'Chief Product and Technology Officer' },
+    { id: 4, name: 'Николай Михайлов', chiefId: 34, title: 'Team Lead' },
+    { id: 12, name: 'Дмитрий Соколов', chiefId: 87, title: 'Chief Operating Officer' },
+    { id: 96, name: 'Марина Федорова', chiefId: 4, title: 'Backend Developer' },
+    { id: 71, name: 'Сергей Кузнецов', chiefId: 59, title: 'Chief Technical Officer' },
+    { id: 34, name: 'Ольга Васильева', chiefId: 71, title: 'Tech Lead' },
+    { id: 42, name: 'Алексей Иванов', chiefId: null, title: 'Chief Executive Officer' },
+    { id: 87, name: 'Ирина Петрова', chiefId: 42, title: 'co-Chief Executive Officer' },
+];
+let bossChief: number | null = null;
+
+for (let i = 0; i < employees.length; i++) {
+    if (employees[i].chiefId === null) {
+        bossChief = employees[i].id;
     }
 }
-console.log(` Наибольший заказ - ${maxOrder}`);
-console.log(` Он сделан в ${maxDay}, по порядку #${position}`);
+
+while (bossChief !== null) {
+    let thisEmployee: User | null = null;
+
+    for (let i = 0; i < employees.length; i++) {
+        if (employees[i].id === bossChief) {
+            thisEmployee = employees[i];
+        }
+    }
+    if (thisEmployee) {
+        console.log(`${thisEmployee.name} (${thisEmployee.title})`);
+    }
+    let nextChiefId: number | null = null;
+    for (let i = 0; i < employees.length; i++) {
+        if (employees[i].chiefId === bossChief) {
+            nextChiefId = employees[i].id;
+        }
+    }
+
+    bossChief = nextChiefId;
+}
