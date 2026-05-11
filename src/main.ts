@@ -6,6 +6,7 @@ function correct(str: string): boolean {
         result = result.replace('[]', '');
         result = result.replace('{}', '');
     }
+    return result.length;
 }
 console.log(correct('()'));
 console.log(correct('({})')); // true
