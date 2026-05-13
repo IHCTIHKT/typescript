@@ -1,20 +1,5 @@
-function correct(str: string): boolean {
-    let result = str;
+function includes(text, numbers) {
+    if (numbers.length > text.length) return false;
 
-    while(result.includes('()') || result.includes('[]') || result.includes('{}')) {
-        result = result.replace('()', '');
-        result = result.replace('[]', '');
-        result = result.replace('{}', '');
-    }
-    return result.length;
-}
-console.log(correct('()'));
-console.log(correct('({})')); // true
-console.log(correct('{[({()})]})')); // true
-console.log(correct('(){}([])[[[]]]{}()')); // true
-
-console.log(correct('(({})')); // false
-console.log(correct('({}))')); // false
-console.log(correct('([})')); // false
-console.log(correct(')(')); // false
-console.log(correct(')(}][{')); // false
+    const countNumbers = {};
+    for (let number of numbers) {
